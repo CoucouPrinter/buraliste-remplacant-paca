@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>José de Castro — Buraliste Remplaçant à Toulon | Région PACA</title>
+    <meta name="description" content="Buraliste remplaçant expérimenté basé à Toulon. Plus de 16 ans en bureau de tabac, maîtrise BIMédia, FDJ et PMU. Disponible en CDD dans toute la région PACA et départements limitrophes.">
+
+    <!-- Open Graph / Réseaux sociaux -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="José de Castro — Buraliste Remplaçant à Toulon">
+    <meta property="og:description" content="Buraliste remplaçant expérimenté basé à Toulon. Plus de 16 ans en bureau de tabac, disponible en CDD dans toute la région PACA.">
+    <meta property="og:image" content="jose_de_castro_portrait.jpeg">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Données structurées Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "José de Castro — Buraliste Remplaçant",
+        "description": "Remplacement de buralistes en région PACA. Gestion autonome de votre bureau de tabac pendant vos absences.",
+        "provider": {
+            "@type": "Person",
+            "name": "José de Castro",
+            "jobTitle": "Buraliste Remplaçant",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Toulon",
+                "addressRegion": "Provence-Alpes-Côte d'Azur",
+                "addressCountry": "FR"
+            }
+        },
+        "areaServed": [
+            {"@type": "AdministrativeArea", "name": "Var"},
+            {"@type": "AdministrativeArea", "name": "Bouches-du-Rhône"},
+            {"@type": "AdministrativeArea", "name": "Alpes-Maritimes"},
+            {"@type": "AdministrativeArea", "name": "Vaucluse"},
+            {"@type": "AdministrativeArea", "name": "Alpes-de-Haute-Provence"},
+            {"@type": "AdministrativeArea", "name": "Hautes-Alpes"}
+        ],
+        "serviceType": "Remplacement buraliste"
+    }
+    </script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏪</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        :root {
+            --couleur-principale: #1a365d;
+            --couleur-accent: #c9a227;
+            --couleur-fond: #faf9f7;
+            --couleur-texte: #2d3748;
+            --couleur-texte-clair: #718096;
+            --couleur-bordure: #e2e0dc;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--couleur-texte);
+            background-color: var(--couleur-fond);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            color: var(--couleur-principale);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--couleur-accent);
+        }
+
+        /* NAVIGATION */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(250, 249, 247, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--couleur-bordure);
+            padding: 1rem 2rem;
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            color: var(--couleur-principale);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--couleur-texte);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--couleur-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(26, 54, 93, 0.03) 100%);
+            z-index: -1;
+        }
+
+        .hero-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--couleur-accent);
+            border: 1px solid var(--couleur-accent);
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            color: var(--couleur-principale);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--couleur-texte-clair);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--couleur-bordure);
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.5rem;
+            color: var(--couleur-principale);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--couleur-texte-clair);
+            margin-top: 0.5rem;
+        }
+
+        .hero-image {
+            position: relative;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            aspect-ratio: 4/5;
+            overflow: hidden;
+        }
+
+        .hero-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--couleur-accent);
+            z-index: -1;
+        }
+
+        .hero-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #d4d0c8 0%, #b8b4ac 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--couleur-texte-clair);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--couleur-principale);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--couleur-texte-clair);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--couleur-accent);
+            margin: 1.5rem auto 0;
+        }
+
+        /* PARCOURS */
+        .about {
+            background: white;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-image {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, #d4d0c8 0%, #b8b4ac 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--couleur-texte-clair);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .about-text h3 {
+            font-size: 1.75rem;
+            color: var(--couleur-principale);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--couleur-texte);
+        }
+
+        .highlight {
+            color: var(--couleur-accent);
+            font-weight: 600;
+        }
+
+        .timeline {
+            margin: 2rem 0;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--couleur-bordure);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            background: var(--couleur-accent);
+            border-radius: 50%;
+        }
+
+        .timeline-duration {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--couleur-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .timeline-title {
+            font-weight: 500;
+            color: var(--couleur-principale);
+            margin-top: 0.25rem;
+        }
+
+        /* MISSION */
+        .mission {
+            background: var(--couleur-fond);
+        }
+
+        .mission-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-size: 1.15rem;
+            color: var(--couleur-texte);
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .mission-card {
+            background: white;
+            padding: 2.5rem;
+            border: 1px solid var(--couleur-bordure);
+        }
+
+        .mission-card h3 {
+            font-size: 1.2rem;
+            color: var(--couleur-principale);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mission-card ul {
+            list-style: none;
+        }
+
+        .mission-card li {
+            padding: 0.6rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--couleur-texte);
+            border-bottom: 1px solid var(--couleur-bordure);
+        }
+
+        .mission-card li:last-child {
+            border-bottom: none;
+        }
+
+        .mission-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--couleur-accent);
+        }
+
+        /* COMPÉTENCES */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 2.5rem;
+            border: 1px solid var(--couleur-bordure);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--couleur-accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.08);
+        }
+
+        .skill-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--couleur-fond);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .skill-card h3 {
+            font-size: 1.1rem;
+            color: var(--couleur-principale);
+            margin-bottom: 0.75rem;
+        }
+
+        .skill-card p {
+            font-size: 0.9rem;
+            color: var(--couleur-texte-clair);
+        }
+
+        /* ORGANISATION */
+        .organisation {
+            background: var(--couleur-principale);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .organisation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .organisation .section-header h2 {
+            color: white;
+        }
+
+        .organisation .section-header p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .organisation .section-divider {
+            background: var(--couleur-accent);
+        }
+
+        .orga-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .orga-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .orga-step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--couleur-accent);
+            color: var(--couleur-principale);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .orga-step h3 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .orga-step p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .orga-highlight {
+            margin-top: 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .orga-highlight-box {
+            display: inline-block;
+            background: var(--couleur-accent);
+            color: var(--couleur-principale);
+            padding: 1rem 2.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* TARIFS */
+        .tarifs {
+            background: white;
+        }
+
+        .tarifs-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .tarif-main {
+            background: var(--couleur-principale);
+            color: white;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .tarif-main h3 {
+            color: var(--couleur-accent);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .tarif-price {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .tarif-price span {
+            font-size: 1.5rem;
+        }
+
+        .tarif-unit {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .tarif-details {
+            padding: 2rem;
+            background: var(--couleur-fond);
+        }
+
+        .tarif-details h3 {
+            font-size: 1.2rem;
+            color: var(--couleur-principale);
+            margin-bottom: 1.5rem;
+        }
+
+        .tarif-details ul {
+            list-style: none;
+        }
+
+        .tarif-details li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--couleur-bordure);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tarif-details li:last-child {
+            border-bottom: none;
+        }
+
+        .tarif-details .label {
+            color: var(--couleur-texte);
+        }
+
+        .tarif-details .value {
+            font-weight: 500;
+            color: var(--couleur-principale);
+        }
+
+        /* ZONE */
+        .zone {
+            background: var(--couleur-fond);
+        }
+
+        .zone-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .zone-text h3 {
+            font-size: 1.75rem;
+            color: var(--couleur-principale);
+            margin-bottom: 1.5rem;
+        }
+
+        .zone-text p {
+            color: var(--couleur-texte);
+            margin-bottom: 1.5rem;
+        }
+
+        .zone-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .zone-tag {
+            background: white;
+            border: 1px solid var(--couleur-bordure);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--couleur-principale);
+        }
+
+        .zone-tag.primary {
+            background: var(--couleur-principale);
+            color: white;
+            border-color: var(--couleur-principale);
+        }
+
+        .zone-map {
+            height: 450px;
+            border: 1px solid var(--couleur-bordure);
+        }
+
+        /* CONTACT */
+        .contact {
+            background: white;
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            color: var(--couleur-principale);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info p {
+            color: var(--couleur-texte-clair);
+            margin-bottom: 2rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-detail-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--couleur-fond);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .contact-detail-text {
+            font-size: 1.05rem;
+        }
+
+        .contact-detail-text span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--couleur-texte-clair);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.25rem;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--couleur-principale);
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .reveal-btn {
+            background: var(--couleur-fond);
+            border: 1px solid var(--couleur-bordure);
+            padding: 0.4rem 1rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--couleur-principale);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            background: var(--couleur-principale);
+            color: white;
+            border-color: var(--couleur-principale);
+        }
+
+        .contact-detail-text a {
+            color: var(--couleur-principale);
+            font-weight: 500;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero-inner,
+            .about-content,
+            .contact-content,
+            .tarifs-content,
+            .zone-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .hero-image {
+                order: -1;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .skills-grid,
+            .mission-grid,
+            .orga-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">José de Castro</a>
+            <ul class="nav-links">
+                <li><a href="#parcours">Parcours</a></li>
+                <li><a href="#mission">Mission</a></li>
+                <li><a href="#organisation">Organisation</a></li>
+                <li><a href="#tarifs">Tarifs</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-content">
+                <span class="hero-badge">Disponible pour remplacements</span>
+                
+                <h1>José de Castro</h1>
+                
+                <p class="hero-subtitle">
+                    Ancien cadre industriel devenu buraliste, je mets 
+                    <strong>plus de 20 ans d'expérience comme commerçant</strong> 
+                    au service de votre établissement pendant vos absences.
+                </p>
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">16</div>
+                        <div class="stat-label">Ans en bureau de tabac</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">PACA</div>
+                        <div class="stat-label">Zone d'intervention</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <div class="hero-image-wrapper">
+                    <img src="jose_de_castro_portrait.jpeg" alt="José de Castro — Buraliste Remplaçant" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARCOURS -->
+    <section id="parcours" class="about">
+        <div class="section-inner">
+            <div class="about-content">
+                <div class="about-image" style="padding: 0;">
+                    <img src="Enseigne_tabac_presse.png" alt="Enseigne tabac presse" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+
+                <div class="about-text">
+                    <h3>Un parcours complet, du management à l'entrepreneuriat</h3>
+                    
+                    <p>
+                        Cadre dans l'industrie pendant <span class="highlight">20 ans</span>, 
+                        j'ai ensuite quitté le statut de salarié pour devenir commerçant. 
+                        Cette double expérience m'apporte une vision complète de la gestion 
+                        d'entreprise et du management d'équipe.
+                    </p>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-duration">20 ans</div>
+                            <div class="timeline-title">Cadre dans l'industrie</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-duration">5 ans</div>
+                            <div class="timeline-title">Hôtelier</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-duration">11 ans</div>
+                            <div class="timeline-title">Bureau de tabac, presse, FDJ, PMU</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-duration">5 ans</div>
+                            <div class="timeline-title">Création et gestion d'un second bureau de tabac</div>
+                        </div>
+                    </div>
+                    
+                    <p>
+                        Ces deux commerces ont été gérés avec des salariés. 
+                        Aujourd'hui retraité, je mets cette expertise à votre service.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION -->
+    <section id="mission" class="mission">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2>Ma mission</h2>
+                <p>Assurer la continuité complète de votre activité pendant votre absence, 
+                en gérant votre commerce comme si c'était le mien.</p>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <h3>📦 Gestion quotidienne</h3>
+                    <ul>
+                        <li>Réception des livraisons, mise en rayon et retour des invendus presse</li>
+                        <li>Réception des commandes</li>
+                        <li>Mise à jour des stocks et contrôle des produits</li>
+                        <li>Réception, contrôle et gestion des jeux de grattage FDJ</li>
+                        <li>Gestion et contrôle des caisses quotidiennement</li>
+                    </ul>
+                </div>
+
+                <div class="mission-card">
+                    <h3>💼 Responsabilités</h3>
+                    <ul>
+                        <li>Dépôt d'espèces</li>
+                        <li>Commande tabac si nécessaire</li>
+                        <li>Commande tabac si nécessaire</li>
+                        <li>Respect strict des horaires d'ouverture</li>
+                        <li>Relation client et fidélisation</li>
+                        <li>Débriefing en fin de mission</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPÉTENCES -->
+    <section id="competences">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2>Outils & Compétences</h2>
+                <p>Une maîtrise complète des outils et du métier</p>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="skills-grid">
+
+                <div class="skill-card">
+                    <div class="skill-icon">💻</div>
+                    <h3>BIMédia / Strator</h3>
+                    <p>Maîtrise du système d'encaissement et de gestion BIMédia et Strator </p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🎰</div>
+                    <h3>FDJ</h3>
+                    <p>Gestion complète de la Française des Jeux : jeux de tirage, grattage, paris sportifs et terminaux</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🏇</div>
+                    <h3>PMU</h3>
+                    <p>Prise de paris hippiques, gestion du terminal PMU et conseil aux parieurs</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ORGANISATION -->
+    <section id="organisation" class="organisation">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2>Organisation du remplacement</h2>
+                <p>Une prise en charge structurée pour votre tranquillité d'esprit</p>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="orga-steps">
+                <div class="orga-step">
+                    <div class="orga-step-number">1</div>
+                    <h3>Arrivée la veille</h3>
+                    <p>Je me familiarise avec votre commerce et nous échangeons sur vos attentes et habitudes de gestion.</p>
+                </div>
+
+                <div class="orga-step">
+                    <div class="orga-step-number">2</div>
+                    <h3>Gestion autonome</h3>
+                    <p>Je prends en charge l'intégralité de votre activité pendant toute la durée de votre absence.</p>
+                </div>
+
+                <div class="orga-step">
+                    <div class="orga-step-number">3</div>
+                    <h3>Débriefing</h3>
+                    <p>À votre retour, nous faisons le point ensemble le dernier jour du remplacement.</p>
+                </div>
+            </div>
+
+            <div class="orga-highlight">
+                <div class="orga-highlight-box">
+                    ✓ Prestation de prise de connaissance gratuite
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TARIFS -->
+    <section id="tarifs" class="tarifs">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2>Conditions tarifaires</h2>
+                <p>Une tarification claire et transparente</p>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="tarifs-content">
+                <div class="tarif-main">
+                    <h3>Tarif horaire</h3>
+                    <div class="tarif-price">20<span>€</span></div>
+                    <div class="tarif-unit">par heure</div>
+                </div>
+
+                <div class="tarif-details">
+                    <h3>Modalités</h3>
+                    <ul>
+                        <li>
+                            <span class="label">Statut</span>
+                            <span class="value">CDD</span>
+                        </li>
+                        <li>
+                            <span class="label">Repas & hébergement</span>
+                            <span class="value">À charge du buraliste</span>
+                        </li>
+                        <li>
+                            <span class="label">Frais de déplacement</span>
+                            <span class="value">Sur devis</span>
+                        </li>
+                        <li>
+                            <span class="label">Formalités administratives</span>
+                            <span class="value">À charge du buraliste</span>
+                        </li>
+                    </ul>
+                    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--couleur-texte-clair);">
+                        Fiche de mission détaillée, contrat et feuille de salaire fournis par vos soins.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ZONE -->
+    <section class="zone">
+        <div class="section-inner">
+            <div class="zone-content">
+                <div class="zone-text">
+                    <h3>Zone de couverture</h3>
+                    <p>
+                        Basé à <strong>Toulon</strong>, je me déplace dans toute la 
+                        <strong>région PACA</strong> ainsi que dans les départements limitrophes.
+                    </p>
+                    <p>
+                        N'hésitez pas à me contacter pour discuter de votre localisation, 
+                        je reste flexible et ouvert aux propositions.
+                    </p>
+
+                    <div class="zone-list">
+                        <span class="zone-tag primary">Var (83)</span>
+                        <span class="zone-tag">Bouches-du-Rhône (13)</span>
+                        <span class="zone-tag">Alpes-Maritimes (06)</span>
+                        <span class="zone-tag">Vaucluse (84)</span>
+                        <span class="zone-tag">Alpes-de-Haute-Provence (04)</span>
+                        <span class="zone-tag">Hautes-Alpes (05)</span>
+                        <span class="zone-tag">Départements limitrophes</span>
+                    </div>
+                </div>
+
+                <div id="zone-carte" class="zone-map"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2>Contact</h2>
+                <p>Parlons de vos besoins de remplacement</p>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Prenons contact</h3>
+                    <p>
+                        Vous prévoyez des congés ou avez besoin d'un remplacement ? 
+                        Contactez-moi pour discuter de vos besoins. Je vous répondrai 
+                        dans les plus brefs délais.
+                    </p>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon">📞</div>
+                        <div class="contact-detail-text">
+                            <span>Téléphone</span>
+                            <button class="reveal-btn" onclick="this.outerHTML='<a href=\'tel:0778460408\'>07 78 46 04 08</a>'">Afficher le numéro</button>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon">✉️</div>
+                        <div class="contact-detail-text">
+                            <span>Email</span>
+                            <button class="reveal-btn" onclick="this.outerHTML='<a href=\'mailto:aetjsilva@hotmail.fr\'>aetjsilva@hotmail.fr</a>'">Afficher l'email</button>
+                        </div>
+                    </div>
+
+                    <div class="contact-detail">
+                        <div class="contact-detail-icon">📍</div>
+                        <div class="contact-detail-text">
+                            <span>Localisation</span>
+                            Toulon, France
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2025 José de Castro — Buraliste Remplaçant</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('zone-carte', {
+            center: [43.8, 6.0],
+            zoom: 7,
+            scrollWheelZoom: false
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap',
+            maxZoom: 10,
+            minZoom: 6
+        }).addTo(map);
+
+        var pacaDepts = ['04', '05', '06', '13', '83', '84'];
+        var baseDept = '83';
+        var limitropheDepts = ['07', '26', '30'];
+
+        fetch('https://france-geojson.gregoiredavid.fr/repo/departements.geojson')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                L.geoJSON(data, {
+                    filter: function(feature) {
+                        var code = feature.properties.code;
+                        return pacaDepts.indexOf(code) !== -1 || limitropheDepts.indexOf(code) !== -1;
+                    },
+                    style: function(feature) {
+                        var code = feature.properties.code;
+                        if (code === baseDept) {
+                            return { fillColor: '#c9a227', fillOpacity: 0.55, color: '#fff', weight: 2 };
+                        } else if (pacaDepts.indexOf(code) !== -1) {
+                            return { fillColor: '#1a365d', fillOpacity: 0.45, color: '#fff', weight: 2 };
+                        } else {
+                            return { fillColor: '#7a9ec2', fillOpacity: 0.35, color: '#fff', weight: 2 };
+                        }
+                    },
+                    onEachFeature: function(feature, layer) {
+                        var code = feature.properties.code;
+                        var nom = feature.properties.nom;
+                        var label = nom + ' (' + code + ')';
+                        if (code === baseDept) label += ' — Base';
+                        layer.bindTooltip(label, { sticky: true });
+                    }
+                }).addTo(map);
+            });
+
+        L.marker([43.1242, 5.928]).addTo(map)
+            .bindPopup('<strong>Toulon</strong><br>Base de José de Castro');
+    </script>
+</body>
+</html>
